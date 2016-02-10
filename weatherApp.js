@@ -11,28 +11,31 @@ function textFields(){
 
 			if (zipcode == ""){
 				console.log("using city and state");
-				req.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&units=imperial&APPID=" + apiKey, false);
-				req.send(null);
-    			console.log(JSON.parse(req.responseText));
-				var response = JSON.parse(req.response);
- 				document.getElementById("cityResults").textContent = "City: " + response.name;
-    			document.getElementById("tempResults").textContent = "Current Temp: " + response.main.temp;
-    			document.getElementById("windResults").textContent = "Wind: " + response.wind.speed + "mph";
-    			document.getElementById("humidityResults").textContent = "Humidity: " + response.main.humidity + "%";
-     			event.preventDefault();
+				req.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=" + city +
+					 "," + state + "&units=imperial&APPID=" + apiKey, true);
+				
 			}
 			else{
 				console.log("using zipcode");
-    			req.open("GET", "http://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",us&units=imperial&APPID=" + apiKey, false);
-    			req.send(null);
-    			console.log(JSON.parse(req.responseText));
-				var response = JSON.parse(req.response);
- 				document.getElementById("cityResults").textContent = "City: " + response.name;
-    			document.getElementById("tempResults").textContent = "Current Temp: " + response.main.temp;
-    			document.getElementById("windResults").textContent = "Wind: " + response.wind.speed + "mph";
-    			document.getElementById("humidityResults").textContent = "Humidity: " + response.main.humidity + "%";
-     			event.preventDefault();
-     }
+    			req.open("GET", "http://api.openweathermap.org/data/2.5/weather?zip=" + zipcode +
+    				 ",us&units=imperial&APPID=" + apiKey, true);
+     		}
+
+     		req.addEventListener("load", function(){
+     			if (req.status >= 200 && req.status < 400){
+    				console.log(JSON.parse(req.responseText));
+					var response = JSON.parse(req.response);
+ 					document.getElementById("cityResults").textContent = "City: " + response.name;
+    				document.getElementById("tempResults").textContent = "Current Temp: " + response.main.temp;
+    				document.getElementById("windResults").textContent = "Wind: " + response.wind.speed + "mph";
+    				document.getElementById("humidityResults").textContent = "Humidity: " + response.main.humidity + "%";
+     			}
+     			else {
+     				console.log("401 error");
+     			}
+     		});
+     		req.send(null);
+     		event.preventDefault();	
      });
 }
 
